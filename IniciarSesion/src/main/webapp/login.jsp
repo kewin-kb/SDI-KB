@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script src="https://cdn.tailwindcss.com"></script>
-        <title>Inicar sesion</title>
+        <title>Inicar sesion -SDI-KB</title>
         <% String rspta="";
         if(request.getParameter("rspta")!=null){
             int r=Integer.parseInt(request.getParameter("rspta"));
