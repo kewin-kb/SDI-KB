@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
+import Login from './paginas/Login';
 
-function App() {
-  const [productos, setProductos] = useState([]);
+function App(){
+  const [usuario,setUsuario] = useState(null);
 
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/productos')
-      .then((response) => {
-        setProductos(response.data);
-      })
-      .catch((error) => {
-        console.error('Error al obtener productos:', error);
-      });
-  }, []);
+  useEffect(() =>{
+const userStored= localStorage.getItem('usuario');
+if(userStored){
+  setUsuario(JSON.parse(userStored));
+}
+},[]);
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Sistema de Control de Inventarios SDI-KB</h1>
-      <h2>Lista de Productos</h2>
-      <ul>
-        {productos.map((producto) => (
-          <li key={producto.id}>
-            {producto.nombre} - Cantidad: {producto.cantidad} - Price: ${producto.precio}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+
+const cerrarSesion = () =>{
+  localStorage.removeItem('token');
+  localStorage.removeItem('usuario');
+  setUsuario(null);
+};
+if(!usuario){
+  return <Login onLoginSuccess={(u) =>setUsuario(u)}/>;
+}
+
+return(
+  <div>
+    <header>
+      <h1>sistem dashboard</h1>
+      <div>
+        <span>Bienvenido , <strong>{usuario.nombre}</strong></span>
+        <button onClick={cerrarSesion}></button>
+      </div>
+    </header>
+  </div>
+)
 }
 
 export default App;
