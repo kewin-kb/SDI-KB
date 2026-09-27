@@ -38,7 +38,7 @@ router.post('/login', async (req,res) => {
     //BUSCAR USUARIO
     const user = await pool.query('SELECT * FROM usuarios WHERE usuario = $1',[usuario]);
     if (user.rows.length === 0){
-        return res.status(400).json({mensaje:'Credenciales invalidas'});
+        return res.status(400).json({mensaje:'Validar datos ingresados'});
     }
 
     //VALIDAR CONTRASEÑA

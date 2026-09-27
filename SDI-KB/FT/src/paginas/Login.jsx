@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 
+
+
 function Login({ onLoginSuccess}){
     const [usuario,setUsuario] = useState('');
     const [password, setPassword] =useState('');
@@ -21,38 +23,48 @@ function Login({ onLoginSuccess}){
                 onLoginSuccess(res.data.usuario);
             }
         }catch(err){
-        setError(err.response?.data?.mensaje || 'Error servidor');
+        setError(err.response?.data?.mensaje || 'Error interno ');
         }
     };
+
+
     return(
-    <div className='bg-green-700'>
-      <h2>Iniciar Sesión - SDI-KB</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={comprobarSesion}>
-        <div style={{ marginBottom: '15px' }}>
-          <label>Correo Electrónico:</label>
-          <input
-            type="text"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
+    <div className=' flex  bg-blue-600 h-screen justify-center '>
+      <div className='self-center w-150 shadow-lg bg-white rounded-xl h-100'> 
+
+        <div className='flex justify-center'>
+        <img src="/img/LOGO.png" alt="" />
+        
         </div>
-        <div style={{ marginBottom: '15px' }}>
+        <hr className='ml-5 mr-5 border-2 rounded-4xl'/>
+        
+        <form onSubmit={comprobarSesion} className='text-2xl mt-5 m-2'>
+          <label>Usuario:</label>
+          <input type="text" 
+          className='bg-mist-200 w-full  rounded-2xl p-2 mb-3'
+          value={usuario}
+          onChange={(e)=>setUsuario(e.target.value)} required
+          placeholder='Ingresa usuario...' />
+          
           <label>Contraseña:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
-        </div>
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Ingresar
-        </button>
-      </form>
+          <input type="password" 
+          className='bg-mist-200 w-full  rounded-2xl p-2'
+          value={password}
+          onChange={(e)=>setPassword(e.target.value)} required
+          placeholder='Ingresa contraseña...' />
+          <button type='submit'
+          className='bg-blue-800 p-2 rounded-2xl mt-5 w-full cursor-pointer text-white hover:bg-blue-600 hover:border-2 border-2'
+          >Iniciar sesión</button>
+          
+        </form>
+        
+        {error && 
+        <p className='text-center text-red-700 text-3xl mt-5  hover:'>{error}</p>
+        
+        }
+      
+      </div>
+      
     </div>
   );
 }
