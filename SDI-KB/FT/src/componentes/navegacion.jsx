@@ -15,7 +15,7 @@ function BarraNavegacion({usuario, cerrarSesion}){
 return(
         <div>
          <aside className='w-60 bg-blue-600 h-screen fixed flex flex-col'>
-            <div className='px-4 mt-5 '>
+            <div className='px-4 mt-5'>
                 <img src="../img/LOGO.png" alt="" 
                 className='brightness-0 invert'/>
             </div>
@@ -54,7 +54,7 @@ return(
                     </li>
                 </ul>
             </nav>
-            <div className='px-4 '>
+            <div className='px-4'>
                 <button onClick={cerrarSesionClick}
                 className='w-full text-black font-medium rounded-xl py-2 mb-2 bg-white hover:bg-blue-400 hover:text-white cursor-pointer'>
                     Cerrar sesion

@@ -2,7 +2,9 @@ const express= require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+
 const authRoutes = require('./routes/authRoutes');
+const tipoEquipo = require('./routes/equipos');
 
 const app = express()
 const PORT = process.env.PORT ||  5000;
@@ -12,6 +14,8 @@ app.use(express.json());
 
 //validar inicio sesion
 app.use('/api/auth', authRoutes);
+app.use('/api/equipo', tipoEquipo);
+
 
 app.listen(PORT, () => {
   console.log(`Servidor de SDI-KB corriendo en el puerto ${PORT}`);

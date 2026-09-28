@@ -44,7 +44,7 @@ router.post('/login', async (req,res) => {
     //VALIDAR CONTRASEÑA
     const validPassword = await bcrypt.compare(password,user.rows[0].password);
     if(!validPassword){
-        return res.status(400).json({mensaje: 'Credenciales invalidas'});
+        return res.status(400).json({mensaje: 'Validar datos ingresados'});
     }
 
     //GENERAR TOKEN JWT
