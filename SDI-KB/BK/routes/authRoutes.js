@@ -10,7 +10,7 @@ router.post('/registrar', async(req, res) =>{
     const {nombre, usuario, password} = req.body;
     try{
     //validar si existe usuario
-    const userExist = await pool.query('SELECT*  FROM usuarios WHERE usuario= $1', [usuario]);
+    const userExist = await pool.query('SELECT *  FROM usuarios WHERE usuario= $1', [usuario]);
     if(userExist.rows.length >0){
         return res.status(400).json({mensaje:'el usuario ya se encuentra registrado'});
     }
