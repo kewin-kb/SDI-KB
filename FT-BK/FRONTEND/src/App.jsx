@@ -1,77 +1,42 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import './App.css'
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import Login from "./paginas/Login";
+import Dashboard from "./paginas/Dashboard";
 
-function App({onLoginSucess}) {
-  const[usuario, setUsuario] = useState('');
-  const[contrasena,setContrasena]=useState('');
-  const[nombre,setNombre]=useState('');
-  const[error, setError] = useState('');
+function App(){
+  const [usuario, setUsuario]=useState(null);
 
-  const registrarUsuario = async(e) =>{
-    e.preventDefault();
-    setError('');
-
-    try{
-      const res = await axios.post('http://localhost:5050/api/usuario/registrar',{
-        nombre,
-        usuario,
-        contrasena
-      });
-      
-      if(onLoginSucess){
-        onLoginSucess(res.data.usuario);
-      }
+  useEffect(()=>{
+    const userStored = localStorage.getItem('usuario');
+    if(userStored){
+      setUsuario(JSON.parse(userStored));
     }
-    catch(err){
-      setError(err.response?.data?.mensaje || 'Error de servidor');
-        
-      }
-  }
+  }, []);
+
 return(
-  <div>
-  <h2>Registrarse</h2>
-  {/*formulario de registro*/}
-  <form onSubmit={registrarUsuario}>
-    <div>
-      <label>Ingresa nombre completo:</label>
-      <input 
-      type="text" 
-      value={nombre}
-      onChange={(e) =>setNombre(e.target.value)}
-      required
-      className='border-2'
+  
+  <BrowserRouter>
+    <Routes>
+      {/*REDiRGIR AL DASHBOARD SI ENCUENTRA USUARIO*/}
+      <Route 
+      path="/Login"
+      element={!usuario ? <Login iniciarCorrectamente={(u) =>setUsuario(u)} />:<Navigate to="/" replace />}
       />
-    </div>
-    <div>
-      <label>Ingresa usuario:</label>
-      <input 
-      type="text" 
-      value={usuario}
-      onChange={(e) =>setUsuario(e.target.value)}
-      required
-      className='border-2'
+
+      {/*REDiRGIR AL LOGIN SI NO TIENE INICIADO SESION*/}
+      <Route
+      path="/"
+      element={usuario ? <Dashboard /> : <Navigate to="/login" replace />}
       />
-    </div>
-    <div>
-      <label>Ingresa contraseña:</label>
-      <input 
-      type="password" 
-      value={contrasena}
-      onChange={(e) =>setContrasena(e.target.value)}
-      required
-      className='border-2'
-      />
-    </div>
-    <button
-    type="submit"
-    className='border-2 rounded-3xl'>Registrar</button>
-  </form>
-  {/*IMPRIMI ERROR */}
-  {error && <p style={{ color: 'red' }}>{error}</p>}
-  </div>
+
+
+      
+      <Route path="*" element={<Navigate to="/" replace />} />
+
+      
+    </Routes>
+  </BrowserRouter>
 )
-};
+}
 
-
-export default App
+export default App;

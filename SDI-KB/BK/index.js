@@ -3,20 +3,25 @@ const cors = require('cors');
 require('dotenv').config();
 
 
-const authRoutes = require('./routes/authRoutes');
-const tipoEquipo = require('./routes/equipos');
-
-const app = express()
-const PORT = process.env.PORT ||  5000;
-
-app.use(cors());
-app.use(express.json());
-
-//validar inicio sesion
-app.use('/api/auth', authRoutes);
-app.use('/api/equipo', tipoEquipo);
+const usuarios = require('./usuario/regisLogin');
+const colaborador = require ("./colaborador/colaborador");
+const tipoEquipo = require ('./equipos/equipos');
 
 
-app.listen(PORT, () => {
+const urls = express()
+const PORT = process.env.PORT ||  5050;
+
+urls.use(cors());
+urls.use(express.json());
+
+
+//Link de API generados
+urls.use('/api/usuario', usuarios);
+urls.use('/api/colaborador',colaborador)
+urls.use('/api/equipo', tipoEquipo);
+
+
+
+urls.listen(PORT, () => {
   console.log(`Servidor de SDI-KB corriendo en el puerto ${PORT}`);
 });

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const pool = require('../db');
+const jwt = require('jsonwebtoken');
 
 
 //REGISTRAR USUARIO
@@ -26,5 +27,41 @@ router.post('/registrar', async(req, res) =>{
     }
 });
 
+//INICIAR SESION
+router.post('/login', async(req,res)=>{
+    const {usuario,contrasena}=req.body;
+    try{
+        //Buscar usuario
+        const user = await pool.query('SELECT * FROM usuarios WHERE usuario =$1',[usuario]);
+        if(user.rows.length ===0){
+            return res.status(400).json({mensaje:'Validar datos ingresados'});
+        }
+        //validar contraseña
+        const validarContrasena = await bcrypt.compare(contrasena,user.rows[0].contrasena);
+        if(!validarContrasena){
+            return res.status(400).json({mensaje:'Validar datos ingresados'});
+        }
+
+        //Generar token
+        const token = jwt.sign(
+            {id:user.rows[0].id},
+            process.env.JWT_SECRET,
+            {expiresIn:'1h'}
+        );
+        res.json({
+        mensaje: 'Inicio de sesion exitoso',
+        token,
+        usuario:{
+            id:user.rows[0].id,
+            nombre:user.rows[0].nombrecompleto,
+            usuario:user.rows[0].usuario,
+        }
+    });
+    }catch(err){
+        console.error(err.message);
+        res.status(500).send('Error en el servidor');
+
+    }
+})
 
 module.exports = router;

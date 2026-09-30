@@ -28,7 +28,7 @@ function ModalAgregarEquipo({esAbierto, esCerrado, esAgregarEquipo}){
     useEffect(() =>{
         const obtenerTipoEqui = async() =>{
             try{
-                const respuesta = await axios.get('http://localhost:5000/api/equipo/tipo');
+                const respuesta = await axios.get('http://localhost:5050/api/equipo/tipo');
                 setTipoEquipos(respuesta.data);
                 if(respuesta.data && respuesta.length >0){
                   setPrimTipo(respuesta.data[0].nombre);  
@@ -46,7 +46,7 @@ function ModalAgregarEquipo({esAbierto, esCerrado, esAgregarEquipo}){
     useEffect(()=>{
         const obtenerDiscos = async() =>{
             try{
-                const respuesta = await axios.get('http://localhost:5000/api/equipo/disco');
+                const respuesta = await axios.get('http://localhost:5050/api/equipo/disco');
                 setTipoDisco(respuesta.data);
                 if(respuesta.data && respuesta.length >0){
                     setPrimDisco(respuesta.data[0].nombre);
@@ -64,7 +64,7 @@ function ModalAgregarEquipo({esAbierto, esCerrado, esAgregarEquipo}){
     useEffect(()=>{
       const obtenerSO = async() =>{
         try{
-          const respuesta = await axios.get('http://localhost:5000/api/equipo/so');
+          const respuesta = await axios.get('http://localhost:5050/api/equipo/so');
           setTipoSO(respuesta.data);
           if(respuesta.data && respuesta.length >0){
             setPrimerSO(respuesta.data[0].nombre);
