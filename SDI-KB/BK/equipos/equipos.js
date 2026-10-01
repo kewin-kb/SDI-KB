@@ -2,6 +2,22 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
+
+//TODOS LOS EQUIPOS
+router.get('/todosequipos',async(req,res)=>{
+    try{
+        const resultado = await pool.query(
+            'SELECT T0."id" AS idEquipo, T1."id" AS idTipoEquipo, T1."nombre" AS nombreTipoEquipo,T2."nombre" AS nombreTipoDisco,T3."nombre" AS tipoSistemaOperativo,T4."nombre" AS tipoEstadoAsignado,T0.*,T1.*,T2.*,T4.* FROM equipos T0 INNER JOIN tipoequipo T1 ON T0."tipoequipo"=T1."id" INNER JOIN tipodisco T2 ON T0."tipodisco"=T2."id" INNER JOIN tiposo T3 ON T0."tiposistope"=T3."id" INNER JOIN estadoasignado T4 ON T0."estado"=T4."id" ORDER BY T0."fechacreado" DESC');
+            res.json(resultado.rows);
+    }catch(err){
+        console.log(err.message);
+        res.status(500).send('Error al obtener datos')
+    }
+});
+
+
+
+//TIPOS DE EQUIPOS
 router.get('/tipo', async (req, res) =>{
     try{
         const resultado = await pool.query('SELECT * FROM tipoequipo ORDER BY nombre ASC');
@@ -12,6 +28,8 @@ router.get('/tipo', async (req, res) =>{
     }
 });
 
+
+//TIPOS DE DISCOS
 router.get('/disco', async(req,res)=>{
     try{
         const resultado = await pool.query('SELECT * FROM tipodisco ORDER BY nombre ASC');
@@ -21,6 +39,8 @@ router.get('/disco', async(req,res)=>{
         res.status(500).send('Error al obtener datos')
     }
 });
+
+//TIPOS SISTEMA OPERATIVO
 router.get('/so', async(req,res)=>{
     try{
         const resultado = await pool.query('SELECT * FROM tiposo ORDER BY nombre ASC');
@@ -31,6 +51,7 @@ router.get('/so', async(req,res)=>{
     }
 });
 
+//AGREGAR EQUIPOS
 router.post('/agregarequipo', async (req, res) => {
     const {
         tipoequipo,

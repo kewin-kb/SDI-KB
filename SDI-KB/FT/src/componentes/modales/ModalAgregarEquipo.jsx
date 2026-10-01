@@ -132,7 +132,7 @@ const handleSubmit = async (e) => {
         estado:1,
         usuario_id:usuarioGuardado.id
       };
-      const respuesta = await axios.post('http://localhost:5000/api/equipo/agregarequipo', agregarEquipo);
+      const respuesta = await axios.post('http://localhost:5050/api/equipo/agregarequipo', agregarEquipo);
 
       setMensajeExito('Equipo agregado exitosamente');
      

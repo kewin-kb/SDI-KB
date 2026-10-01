@@ -15,7 +15,7 @@ return(
             className="text-white bg-red-600  rounded-xl px-4 text-xl font-extrabold cursor-pointer hover:invert-20"
             >X</button>
         </div>
-        <div className=" p-2 flex-1 flex flex-col">
+        <div className=" p-2 flex-1 flex flex-col m-2">
     {/*contenido interno modal*/} 
         {children}
         </div>
