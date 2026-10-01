@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import ModalAgregarEquipo from '../componentes/modales/ModalAgregarEquipo';
+import ModalVerEquipo from '../componentes/modales/ModalVerEquipo';
 import axios from 'axios';
 
 
 function Inventario (){
     const [modalAgregarEquipoAbierto, setModalAgregarEquipoAbierto] = useState(false);
     const [todosEquipos, setTodosEquipos]=useState([]);
+
+    const [modalVerEquipo, setModalVerEquipo] = useState(false);
+    const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
 
     useEffect(()=>{
         axios.get('http://localhost:5050/api/equipo/todosequipos')
@@ -16,6 +20,12 @@ function Inventario (){
             console.error('Error al obtener inventatio',error);
         });
     }, []);
+
+//ACTIVAR MODAL PARA VER EQUIPO
+    const ventanaEditarEquipo = (todosEquipos) =>{
+        setEquipoSeleccionado(todosEquipos);
+        setModalVerEquipo(true);
+    };
 
 return(
     <div className=''>
@@ -53,15 +63,16 @@ return(
             {todosEquipos.map((todosEquipos) =>(
             <tr key={todosEquipos.idequipo}>
 
-                <td className='border-2 border-gray-300'>{todosEquipos.nombretipoequipo}</td>
-                <td className='border-2 border-gray-300'>{todosEquipos.marca}</td>
-                <td className='border-2 border-gray-300'>{todosEquipos.modelo}</td>
-                <td className='border-2 border-gray-300'>{todosEquipos.serial}</td>
-                <td className='border-2 border-gray-300'>{todosEquipos.hostname}</td>
-                <td className='border-2 border-gray-300'>{todosEquipos.tipoestadoasignado}</td>
-                <td className='border-2 border-gray-300'>{todosEquipos.modelo}</td>
-                <td className='border border-gray-300 flex'>
-                    <button className='w-full justify-center items-center flex border rounded-2xl'>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.nombretipoequipo}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.marca}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.modelo}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.serial}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.hostname}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.tipoestadoasignado}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.modelo}</td>
+                <td className='border-2 border-gray-300 flex'>
+                    <button className='w-full justify-center items-center flex border rounded-2xl hover:invert-90 cursor-pointer'
+                    onClick={()=>ventanaEditarEquipo(todosEquipos)}>
                     <img src="./img/ojo.svg" alt=""
                     className='w-5'
                     />
@@ -98,7 +109,16 @@ return(
           console.log('Equipo registrado');
         }}
       />
-    
+
+      <ModalVerEquipo
+      esAbierto={modalVerEquipo}
+      esCerrado={()=>{
+        setModalVerEquipo(false);
+        setEquipoSeleccionado(null);
+      }}
+      equipoVer ={equipoSeleccionado}
+      esEquipoVer={todosEquipos}
+      />    
     </div>
     
     )
