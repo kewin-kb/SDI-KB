@@ -64,7 +64,8 @@ return(
         
         <main className='ml-60 p-2 min-h-screen'>
         <Outlet />
-      </main>
+        </main>
+
         </div>
     )
 }
