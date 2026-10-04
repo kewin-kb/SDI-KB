@@ -6,6 +6,7 @@ require('dotenv').config();
 const usuarios = require('./usuario/regisLogin');
 const colaborador = require ("./colaborador/colaborador");
 const tipoEquipo = require ('./equipos/equipos');
+const asignaciones = require('./equipos/asignaciones')
 
 
 const urls = express()
@@ -19,6 +20,7 @@ urls.use(express.json());
 urls.use('/api/usuario', usuarios);
 urls.use('/api/colaborador',colaborador)
 urls.use('/api/equipo', tipoEquipo);
+urls.use('/api/asignaciones', asignaciones);
 
 
 

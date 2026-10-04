@@ -8,6 +8,8 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 function App() {
   const [usuario, setUsuario] = useState(null);
+  const [cargando, setCargando] = useState(true);
+
   
   useEffect(() => {
     
@@ -15,7 +17,18 @@ function App() {
     if (userStored) {
       setUsuario(JSON.parse(userStored));
     }
+     setCargando(false);
+
+
   }, []);
+  if (cargando) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p>Cargando...</p>
+            </div>
+        );
+    }
+
 
   return (
     <BrowserRouter>
@@ -23,22 +36,22 @@ function App() {
     
         <Route
           path="/login"
-          element={!usuario ? <Login onLoginSuccess={(u) => setUsuario(u)} /> : <Navigate to="/" />}
+          element={!usuario ? (<Login onLoginSuccess={(u) => setUsuario(u)} />) : (<Navigate to="/" replace/>)}
         />
 
       
         <Route 
           path="/"
-          element={usuario ? <BarraNavegacion usuario={usuario} cerrarSesion={() => {
+          element={usuario ? (<BarraNavegacion usuario={usuario} cerrarSesion={() => {
             localStorage.removeItem('token');
             localStorage.removeItem('usuario');
             setUsuario(null);
-          }} /> : <Navigate to="/login" />}
+          }} />) : (<Navigate to="/login" replace/>)}
         >
           
           <Route index element={<Dashboard />} />
           <Route path="inventario" element={<Inventario />} />
-          <Route path="usuario" element={<Usuario/>} />
+          <Route path="usuario" element={<Usuario />} />
           
         
           <Route path="*" element={<Navigate to="/" replace />} />

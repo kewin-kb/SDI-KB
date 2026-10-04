@@ -5,21 +5,38 @@ import axios from 'axios';
 
 
 function Inventario (){
-    const [modalAgregarEquipoAbierto, setModalAgregarEquipoAbierto] = useState(false);
+    const [modalFormularioAbierto, setModalFormularioAbierto] = useState(false);
     const [todosEquipos, setTodosEquipos]=useState([]);
 
     const [modalVerEquipo, setModalVerEquipo] = useState(false);
     const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
 
-    useEffect(()=>{
-        axios.get('http://localhost:5050/api/equipo/todosequipos')
-        .then((response)=>{
-            setTodosEquipos(response.data);
-        })
-        .catch((error)=>{
-            console.error('Error al obtener inventatio',error);
-        });
-    }, []);
+    const cargarInventario = () => {
+    axios.get('http://localhost:5050/api/equipo/todosequipos')
+      .then((response) => {
+        setTodosEquipos(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener inventario', error);
+      });
+  };
+
+  useEffect(() => {
+    cargarInventario();
+  }, []);
+
+
+//abrir modal para gregar nuevo equipo
+const abrirModalAgregar = () =>{
+    setEquipoSeleccionado(null);
+    setModalFormularioAbierto(true);
+};
+
+//abrir modal para editar equipo registrado
+const abrirModalEditar = (equipo) =>{
+    setEquipoSeleccionado(equipo);
+    setModalFormularioAbierto(true);
+};
 
 //ACTIVAR MODAL PARA VER EQUIPO
     const ventanaEditarEquipo = (todosEquipos) =>{
@@ -33,7 +50,7 @@ return(
 
     <div className=''>
         <div className='grid grid-cols-2 space-x-1'>
-        <a onClick={() => setModalAgregarEquipoAbierto(true)} className="bg-blue-600  flex justify-center items-center cursor-pointer rounded-xl p-1 text-white hover:invert-20 ">
+        <a onClick={() => setModalFormularioAbierto(true)} className="bg-blue-600  flex justify-center items-center cursor-pointer rounded-xl p-1 text-white hover:invert-20 ">
                 <img src="./img/agregar.svg" alt="" className="w-8 brightness-0 invert" />
                 <span className="">Agregar equipo</span>
         </a>
@@ -61,15 +78,15 @@ return(
             </thead>
             <tbody>
             {todosEquipos.map((todosEquipos) =>(
-            <tr key={todosEquipos.idequipo}>
+            <tr key={todosEquipos.idEquipo}>
 
-                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.nombretipoequipo}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.nombreTipoEquipo}</td>
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.marca}</td>
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.modelo}</td>
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.serial}</td>
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.hostname}</td>
-                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.tipoestadoasignado}</td>
-                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.modelo}</td>
+                <td className='border-2 border-gray-300 pl-1'>{todosEquipos.tipoEstadoAsignado}</td>
+                <td className='border-2 border-gray-300 pl-1'>prueb</td>
                 <td className='border-2 border-gray-300 flex'>
                     <button className='w-full justify-center items-center flex border rounded-2xl hover:invert-90 cursor-pointer'
                     onClick={()=>ventanaEditarEquipo(todosEquipos)}>
@@ -77,7 +94,10 @@ return(
                     className='w-5'
                     />
                     </button>
-                    <button className='w-full justify-center items-center flex border rounded-2xl'>
+                    <button className='w-full justify-center items-center flex border rounded-2xl'
+                    title="Editar Equipo"
+                    onClick={() => abrirModalEditar(todosEquipos)}
+                    >
                     <img src="./img/editar.svg" alt=""
                     className='w-5'
                     />
@@ -103,11 +123,13 @@ return(
 
 
     <ModalAgregarEquipo
-        esAbierto={modalAgregarEquipoAbierto}
-        esCerrado={() => setModalAgregarEquipoAbierto(false)}
-        esAgregarEquipo={() => {
-          console.log('Equipo registrado');
+        esAbierto={modalFormularioAbierto}
+        esCerrado={() => {
+          setModalFormularioAbierto(false);
+          setEquipoSeleccionado(null);
         }}
+        equipoAEditar={equipoSeleccionado}
+        esAgregarEquipo={cargarInventario}
       />
 
       <ModalVerEquipo

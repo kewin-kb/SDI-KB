@@ -2,82 +2,95 @@ import React, { useEffect, useState } from "react";
 import Modal from "../Modal";
 import axios from 'axios';
 
-function ModalAgregarEquipo({esAbierto, esCerrado, esAgregarEquipo}){
+function ModalAgregarEquipo({esAbierto, esCerrado, alGuardarSuccess, equipoAEditar = null}){
+
+    const esModoEdicion = Boolean(equipoAEditar);
+
     const [primTipo, setPrimTipo] = useState('');
     const [tiposEquipos,setTipoEquipos] = useState([]);
     const [cargandoTiposEquipos, setCargandoTipoEquipo] = useState(true);
+
     const [hostname, setHostname] = useState('');
     const [marca, setMarca] =useState('');
     const [modelo, setModelo] =useState('');
     const [serial, setSerial] =useState('');
     const [procesador, setProcesador] =useState('');
     const [ram, setRam] = useState('');
+
     const [primDisco, setPrimDisco] = useState('');
     const [tipoDisco,setTipoDisco]=useState([]);
     const [disco, setDisco] = useState('');
     const [cargandoTipoDisco, setCargandoTipoDisco] = useState(true);
+
     const [primerSO, setPrimerSO] = useState('');
     const [tipoSO, setTipoSO] = useState([]);
     const [cargandoTipoSO,setCargandoTipoSO] =useState(''); 
+
     const [fechaCompra, setFechaCompra] = useState('');
     const [garantia,setGarantia] = useState('');
+
     const [mensajeError, setMensajeError] = useState('');
     const [mensajeExito, setMensajeExito] = useState('');
+
     const usuarioGuardado = JSON.parse(localStorage.getItem('usuario'));
 
     useEffect(() =>{
-        const obtenerTipoEqui = async() =>{
-            try{
-                const respuesta = await axios.get('http://localhost:5050/api/equipo/tipo');
-                setTipoEquipos(respuesta.data);
-                if(respuesta.data && respuesta.length >0){
-                  setPrimTipo(respuesta.data[0].nombre);  
-                }
-            }catch(err){
-                console.error('Error al cargar tipo de equipos', err);
-                setMensajeError('No cargan los tipos de equipos');
-            }finally{
-                setCargandoTipoEquipo(false);
-            }
-        };
-        if (esAbierto) obtenerTipoEqui();
-          }, [esAbierto]);
 
-    useEffect(()=>{
-        const obtenerDiscos = async() =>{
-            try{
-                const respuesta = await axios.get('http://localhost:5050/api/equipo/disco');
-                setTipoDisco(respuesta.data);
-                if(respuesta.data && respuesta.length >0){
-                    setPrimDisco(respuesta.data[0].nombre);
-                }
-            }catch(err){
-                console.error('Error al cargar tipo de discos',err)
-                setMensajeError('No carga los tipos de discos');
-            }finally{
-                setCargandoTipoDisco(false);
-            }
-        };
-        if (esAbierto) obtenerDiscos();
-        }, [esAbierto]);
+      if (!esAbierto) return;
 
-    useEffect(()=>{
-      const obtenerSO = async() =>{
+      const cargarInfoquipo = async() =>{
         try{
-          const respuesta = await axios.get('http://localhost:5050/api/equipo/so');
-          setTipoSO(respuesta.data);
-          if(respuesta.data && respuesta.length >0){
-            setPrimerSO(respuesta.data[0].nombre);
+          const [resTipo, resDisco, resSO] = await Promise.all([
+            axios.get('http://localhost:5050/api/equipo/tipo'),
+            axios.get('http://localhost:5050/api/equipo/disco'),
+            axios.get('http://localhost:5050/api/equipo/so')
+          ]);
+          setTipoEquipos(resTipo.data);
+          setTipoDisco(resDisco.data);
+          setTipoSO(resSO.data);
+
+          if(!equipoAEditar){
+            if (resTipo.data.length > 0) setPrimTipo(resTipo.data[0].id);
+            if (resDisco.data.length > 0) setPrimDisco(resDisco.data[0].id);
+            if (resSO.data.length > 0) setPrimerSO(resSO.data[0].id);
           }
         }catch(err){
-          console.error('Error al cargar tipos de SO', err)
-          setMensajeError('No carga tipo de so');
+          console.log('Error al cargar tipos',err);
+          setMensajeError('Erro al cargar opciones del formulario');
         }finally{
+          setCargandoTipoEquipo(false);
+          setCargandoTipoDisco(false);
           setCargandoTipoSO(false);
         }
       };
-      if (esAbierto) obtenerSO();
-      }, [esAbierto]);
+      cargarInfoquipo();
+    }, [esAbierto,equipoAEditar]);
+
+  useEffect(() =>{
+    if (!esAbierto) return;
+
+    if(esModoEdicion && equipoAEditar){
+      setHostname(equipoAEditar.hostname || '');
+      setMarca(equipoAEditar.marca || '');
+      setModelo(equipoAEditar.modelo || '');
+      setSerial(equipoAEditar.serial || '');
+      setProcesador(equipoAEditar.procesador || '');
+      setRam(equipoAEditar.ram || '');
+      setDisco(equipoAEditar.disco || '');
+      setGarantia(equipoAEditar.garantia || ''); 
+      if (equipoAEditar.fechacompra){
+        setFechaCompra(new Date (equipoAEditar.fechacompra).toISOString().split('T')[0]);
+      }else {
+        setFechaCompra('');
+      }
+      setPrimTipo(equipoAEditar.tipoequipo || '');
+      setPrimDisco(equipoAEditar.tipodisco || '');
+      setPrimerSO(equipoAEditar.tiposistope || '');
+    }else {
+      limpiarFormulario();
+    }
+  }, [esAbierto, equipoAEditar]);
+
 
 {/*LIMPIAR DEPSUES DE AGREGAR UN EQUIPO*/}
 const  limpiarFormulario = () =>{
@@ -92,71 +105,63 @@ const  limpiarFormulario = () =>{
   setGarantia('');
   setMensajeError('');
   setMensajeExito('');
-  if (tiposEquipos.length > 0) setPrimTipo(tiposEquipos[0].id);
-  if (tipoDisco.length > 0) setPrimDisco(tipoDisco[0].id);
-  if (tipoSO.length > 0) setPrimerSO(tipoSO[0].id);
+ };
 
 
-};
-
-useEffect(() => {
-  if (!esAbierto) {
-    limpiarFormulario();
-  }
-}, [esAbierto]);
 
 const handleSubmit = async (e) => {
     e.preventDefault();
     setMensajeError('');
     setMensajeExito('');
 
-    try {
-      const idTipoSeleccionado = primTipo || (tiposEquipos.length > 0 ? tiposEquipos[0].id : null);
-      const idDiscoSeleccionado = primDisco || (tipoDisco.length > 0 ? tipoDisco[0].id : null);
-      const idSOSeleccionado = primerSO || (tipoSO.length > 0 ? tipoSO[0].id : null); 
+  const carga ={
+    tipoequipo: parseInt(primTipo,10),
+    marca,
+    hostname,
+    modelo,
+    serial,
+    procesador,
+    ram:  parseInt(ram, 10),
+    tipodisco: parseInt(primDisco, 10),
+    disco: parseInt(disco, 10),
+    tiposistope: parseInt(primerSO, 10),
+    fechacompra: fechaCompra,
+    garantia: parseInt(garantia, 10),
+    usuario_id: usuarioGuardado?.id,
+    };
 
+    try{
+      if(esModoEdicion){
 
-      const agregarEquipo ={
-        tipoequipo:parseInt(idTipoSeleccionado,10),
-        marca: marca,
-        hostname:hostname,
-        modelo:modelo,
-        serial:serial,
-        procesador:procesador,
-        ram:ram,
-        disco:parseInt(disco,10),
-        tipodisco:parseInt(idDiscoSeleccionado),
-        tiposistope:parseInt(idSOSeleccionado),
-        fechacompra:fechaCompra,
-        garantia:parseInt(garantia, 10),
-        estado:1,
-        usuario_id:usuarioGuardado.id
-      };
-      const respuesta = await axios.post('http://localhost:5050/api/equipo/agregarequipo', agregarEquipo);
+        await axios.put(`http://localhost:5050/api/equipo/editar/${equipoAEditar.idEquipo}`, carga);
+        setMensajeExito('Equipo actualizado exitosamente');
+      }else{
+        await  axios.post('http://localhost:5050/api/equipo/agregarequipo',carga);
+        setMensajeExito('Equipo agregado exitosamente');
+      }
+      if(alGuardarSuccess) alGuardarSuccess();
 
-      setMensajeExito('Equipo agregado exitosamente');
-     
-      if (esAgregarEquipo) esAgregarEquipo(respuesta.data.equipo);
-
-      setTimeout(() => {
+      setTimeout(()=>{
         limpiarFormulario();
-        if (esCerrado) esCerrado();
-      }, 1500);
-
-    } catch (err) {
-      console.error('Error al enviar equipo:', err);
-      setMensajeError(err.response?.data?.mensaje || 'Error al agregar equipo');
+        if(esCerrado) esCerrado();
+      }, 1200);
+    }catch(err){
+      console.error('Error al guardar equipo:', err);
+      setMensajeError(err.response?.data?.mensaje || 'Eroror al procesar la solicitud');
     }
   };
 
-const manejarCierre = () => {
-    limpiarFormulario();
-    if (esCerrado) esCerrado();
-  };
+const manejarCierre = () =>{
+  limpiarFormulario();
+  if(esCerrado) esCerrado();
+};
 
 return(
   
-    <Modal esAbierto={esAbierto} esCerrado={manejarCierre} titulo="Agregar equipo" >
+    <Modal
+    esAbierto={esAbierto}
+    esCerrado={manejarCierre}
+    titulo={esModoEdicion ? `Editar Equipo: ${equipoAEditar?.serial || ''}`: "Agregar nuevo equipo"}>
         
 
   <form
@@ -320,6 +325,7 @@ return(
         required
          />
     </div>
+    
 
 
 
@@ -331,7 +337,7 @@ return(
         type="submit"
         className="bg-blue-600 flex-1 p-1 rounded-lg font-bold text-white hover:invert-25 cursor-pointer "
       >
-        Agregar
+        {esModoEdicion ? 'Guardar Cambios' : 'Guardar equipo'}
       </button>
       <button
         type="button"

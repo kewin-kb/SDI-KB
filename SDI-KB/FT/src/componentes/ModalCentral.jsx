@@ -9,7 +9,7 @@ function ModalCentrado({esAbierto,esCerrado,titulo,children}){
             <div className="w-full flex justify-between">
             <h3 className="w-full text-center font-bold text-4xl mb-3">{titulo}</h3>
             <button onClick={esCerrado}
-            className="bg-red-500 text-4xl rounded-3xl px-1 text-white hover:invert-25 cursor-pointer">X</button>
+            className="bg-red-500 text-4xl rounded-4xl px-2  text-white hover:invert-25 cursor-pointer">X</button>
             </div>
             <div>
                 {children}
