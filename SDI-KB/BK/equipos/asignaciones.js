@@ -25,6 +25,10 @@ router.post('/asignar', async (req,res)=>{
         const activo = await client.query(
             `
             SELECT 
+            T0.id,
+            T0.codigo,
+            T0.estado_id,
+            T1.nombre AS estado
             FROM activos T0
             INNER JOIN estadoasignado T1 ON T0.estado_id = T1.id
             WHERE T0.id= $1
@@ -47,14 +51,22 @@ router.post('/asignar', async (req,res)=>{
         const colaborador = await client.query(`
             SELECT
             id,
-            nombre
+            nombrecompleto
             FROM colaborador
             WHERE id= $1
             `, [colaborador_id]);
+            if (colaborador.rows.length === 0) {
+
+            await client.query('ROLLBACK');
+
+            return res.status(404).json({
+                 mensaje: 'El colaborador no existe'
+            });
+}
 
         const asignacionActiva = await client.query(`
         SELECT id
-        FROM asginaciones
+        FROM asignaciones
         WHERE activo_id = $1
         AND estado = 'Activa'
         `,[activo_id]);
@@ -65,7 +77,7 @@ router.post('/asignar', async (req,res)=>{
                 mensaje:'El equipo ya tiene una asignacion activa'
             });
         }
-        const nuevaAsignacion = await clientquery(`
+        const nuevaAsignacion = await client.query(`
         INSERT INTO asignaciones(
             activo_id,
             usuario_id,
@@ -135,17 +147,28 @@ router.post('/asignar', async (req,res)=>{
                 },
                 colaborador: colaborador.rows[0]
             });
-    }catch(error){
-        await client.query('ROLLBACK');
+    }catch(error) {
 
-        console.log(
-            'Error al asignar equipo:',error);
-        res.status(500).json({
-            mensaje: 'Errir ak asignar equipo',
-            error: error.message
-        });
-    }finally{
-        client.release();
+    await client.query('ROLLBACK');
+
+    console.error('=================================');
+    console.error('ERROR AL ASIGNAR EQUIPO');
+    console.error('Mensaje:', error.message);
+    console.error('Código:', error.code);
+    console.error('Detalle:', error.detail);
+    console.error('Hint:', error.hint);
+    console.error('Tabla:', error.table);
+    console.error('Columna:', error.column);
+    console.error('=================================');
+
+    res.status(500).json({
+        mensaje: 'Error al asignar equipo',
+        error: error.message
+    });
+
+} finally {
+
+    client.release();
     } 
 });
 

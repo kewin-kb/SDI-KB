@@ -189,6 +189,28 @@ function ModalVerEquipo({ esAbierto, esCerrado, equipoVer }) {
             </div>
          )}
 
+         {pestanaActiva === 'historial' && (
+            <div>
+
+              <div className="text-center text-2xl font-bold pt-2">Historial de modificaciones </div>
+              <div>
+                <table>
+                  <thead>
+                  <tr>
+                    <th className="border-2 border-gray-300">Modificaion</th>
+                    <th className="border-2 border-gray-300">Tipo campo</th>
+                    <th className="border-2 border-gray-300">anterior</th>
+                    <th className="border-2 border-gray-300">nuevo</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+         )}
+
 
 
       <div className="mt-6 flex justify-end">

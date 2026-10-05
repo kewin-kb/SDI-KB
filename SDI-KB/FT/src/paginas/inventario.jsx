@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ModalAgregarEquipo from '../componentes/modales/ModalAgregarEquipo';
 import ModalVerEquipo from '../componentes/modales/ModalVerEquipo';
+import ModalAsignarEquipo from '../componentes/modales/ModalAsignarEquipo';
 import axios from 'axios';
 
 
@@ -10,6 +11,9 @@ function Inventario (){
 
     const [modalVerEquipo, setModalVerEquipo] = useState(false);
     const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
+
+    const [modalAsignarEquipo, setAsignarEquipo]= useState(false);
+    const [equipoParaAsignar, setEquipoParaAsignar]=useState(null);
 
     const cargarInventario = () => {
     axios.get('http://localhost:5050/api/equipo/todosequipos')
@@ -43,6 +47,12 @@ const abrirModalEditar = (equipo) =>{
         setEquipoSeleccionado(todosEquipos);
         setModalVerEquipo(true);
     };
+
+//PARA ASIGNAR EQUIPO
+    const ventanaAsignarEquipo = (equipo) => {
+    setEquipoParaAsignar(equipo);
+    setAsignarEquipo(true);
+};
 
 return(
     <div className=''>
@@ -102,7 +112,8 @@ return(
                     className='w-5'
                     />
                     </button>
-                    <button className='w-full justify-center items-center flex border rounded-2xl'>
+                    <button className='w-full justify-center items-center flex border rounded-2xl'
+                    onClick={() => ventanaAsignarEquipo(todosEquipos)}>
                     <img src="./img/opciones.svg" alt=""
                     className='w-5'
                     />
@@ -140,7 +151,19 @@ return(
       }}
       equipoVer ={equipoSeleccionado}
       esEquipoVer={todosEquipos}
-      />    
+      /> 
+
+      <ModalAsignarEquipo
+      esAbierto={modalAsignarEquipo}
+      esCerrado={()=>{
+        setAsignarEquipo(false);
+        setEquipoParaAsignar(null);
+      }}
+      equipoAAsignar={equipoParaAsignar}
+      alGuardarSuccess={cargarInventario}
+      />
+
+
     </div>
     
     )
