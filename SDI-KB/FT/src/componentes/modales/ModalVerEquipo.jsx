@@ -1,8 +1,33 @@
 import React, { useState } from "react";
 import ModalCentrado from "../ModalCentral";
+import { useEffect } from "react";
+import axios from "axios";
 
 function ModalVerEquipo({ esAbierto, esCerrado, equipoVer }) {
   const [pestanaActiva, setPestanaActiva] = useState('general');
+  const [historial, setHistorial] = useState([]);
+  const [cargando, setCargando] = useState(false);
+
+  useEffect(() => {
+    if(!esAbierto || !equipoVer?.idActivo){
+      return;
+    }
+    const cargarHistorial = async() =>{
+      try{
+        setCargando(true);
+        const respuesta = await axios.get(
+          `http://localhost:5050/api/equipo/historial/${equipoVer.idActivo}`
+        );
+        setHistorial(respuesta.data);
+      }catch(error){
+        console.error('Error al cargar historial', error);
+        setHistorial([]);
+      }finally{
+        setCargando(false);
+      }
+    };
+    cargarHistorial();
+  },[esAbierto, equipoVer]);
 
   if (!equipoVer) return null;
 
@@ -194,17 +219,34 @@ function ModalVerEquipo({ esAbierto, esCerrado, equipoVer }) {
 
               <div className="text-center text-2xl font-bold pt-2">Historial de modificaciones </div>
               <div>
-                <table>
+                <table className="w-full">
                   <thead>
                   <tr>
-                    <th className="border-2 border-gray-300">Modificaion</th>
+                    <th className="border-2 border-gray-300">Modificación</th>
                     <th className="border-2 border-gray-300">Tipo campo</th>
-                    <th className="border-2 border-gray-300">anterior</th>
-                    <th className="border-2 border-gray-300">nuevo</th>
+                    <th className="border-2 border-gray-300">Anterior</th>
+                    <th className="border-2 border-gray-300">Nuevo</th>
+                    <th className="border-2 border-gray-300">Obervacion</th>
+                    <th className="border-2 border-gray-300">Fecha</th>
+                    <th className="border-2 border-gray-300">Quien edito</th>
+                    
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="text-center">
+                    {historial.map((historialVer) =>(
+                      <tr key={historialVer.id}>
                     
+                    
+                    <td className="border-2 border-gray-300">{historialVer.accion}</td>
+                    <td className="border-2 border-gray-300">{historialVer.campo_modificado || '-'}</td>
+                    <td className="border-2 border-gray-300">{historialVer.valor_anterior || '-' }</td>
+                    <td className="border-2 border-gray-300">{historialVer.valor_nuevo || '-'}</td>
+                    <td className="border-2 border-gray-300">{historialVer.observacion|| '-'}</td>
+                    <td className="border-2 border-gray-300">{historialVer.fecha|| '-'}</td>
+                    <td className="border-2 border-gray-300">{historialVer.usuario|| '-'}</td>
+                    
+                    </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

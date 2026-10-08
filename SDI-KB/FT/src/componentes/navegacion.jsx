@@ -49,7 +49,17 @@ return(
                      :'rounded-l-lg p-1 items-center  hover:bg-blue-500'}`}>
                         <img src="../img/usuario.svg" alt="" 
                         className='w-8'/>
-                        <span>Usuario</span>
+                        <span>Colaboradores</span>
+                     </Link>
+                    </li>
+                    <li className='mt-2 ml-1'>
+                     <Link to="/usuario"
+                     className={`flex ${activo('/configuracion')
+                     ?'rounded-l-lg p-1 items-center bg-white text-black'
+                     :'rounded-l-lg p-1 items-center  hover:bg-blue-500'}`}>
+                        <img src="../img/configuracion.svg" alt="" 
+                        className='w-8'/>
+                        <span>Configuracion</span>
                      </Link>
                     </li>
                 </ul>

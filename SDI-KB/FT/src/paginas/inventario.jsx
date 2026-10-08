@@ -31,7 +31,7 @@ function Inventario (){
 
 
 //abrir modal para gregar nuevo equipo
-const abrirModalAgregar = () =>{
+const abrirModalAgregar = () => {
     setEquipoSeleccionado(null);
     setModalFormularioAbierto(true);
 };
@@ -60,7 +60,7 @@ return(
 
     <div className=''>
         <div className='grid grid-cols-2 space-x-1'>
-        <a onClick={() => setModalFormularioAbierto(true)} className="bg-blue-600  flex justify-center items-center cursor-pointer rounded-xl p-1 text-white hover:invert-20 ">
+        <a  onClick={abrirModalAgregar}className="bg-blue-600  flex justify-center items-center cursor-pointer rounded-xl p-1 text-white hover:invert-20 ">
                 <img src="./img/agregar.svg" alt="" className="w-8 brightness-0 invert" />
                 <span className="">Agregar equipo</span>
         </a>
@@ -96,7 +96,7 @@ return(
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.serial}</td>
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.hostname}</td>
                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.tipoEstadoAsignado}</td>
-                <td className='border-2 border-gray-300 pl-1'>prueb</td>
+                 <td className='border-2 border-gray-300 pl-1'>{todosEquipos.nombrecompleto} {todosEquipos.apellido}</td>
                 <td className='border-2 border-gray-300 flex'>
                     <button className='w-full justify-center items-center flex border rounded-2xl hover:invert-90 cursor-pointer'
                     onClick={()=>ventanaEditarEquipo(todosEquipos)}>
@@ -134,14 +134,14 @@ return(
 
 
     <ModalAgregarEquipo
-        esAbierto={modalFormularioAbierto}
-        esCerrado={() => {
-          setModalFormularioAbierto(false);
-          setEquipoSeleccionado(null);
-        }}
-        equipoAEditar={equipoSeleccionado}
-        esAgregarEquipo={cargarInventario}
-      />
+    esAbierto={modalFormularioAbierto}
+    esCerrado={() => {
+        setModalFormularioAbierto(false);
+        setEquipoSeleccionado(null);
+    }}
+    equipoAEditar={equipoSeleccionado}
+    alGuardarSuccess={cargarInventario}
+/>
 
       <ModalVerEquipo
       esAbierto={modalVerEquipo}

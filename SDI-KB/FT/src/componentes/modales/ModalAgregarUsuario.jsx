@@ -125,7 +125,7 @@ return(
       value={cedula} 
       onChange={(e)=>setCedula(e.target.value)}
       className="flex-1 bg-gray-200 p-0.5 rounded-xl pl-1"
-      placeholder="Ingresa apellidos..."
+      placeholder="Ingresa cedula..."
       required
       />
     </div>

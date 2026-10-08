@@ -74,4 +74,27 @@ router.post('/agregarcolaborador',async(req,res)=>{
         });
     }
 });
+
+router.get('/verColaboradores', async(req,res) =>{
+   try{
+    const respuesta = await pool.query(`
+        SELECT
+        T0.nombrecompleto,
+        T0.apellido,
+        T0.cedula,
+        T1.nombre AS"nombre_Area",
+        T0.cargo
+        FROM colaborador T0
+        INNER JOIN areas T1 ON T0.area = T1.id
+        ORDER BY T1.nombre
+        `)
+    res.json(respuesta.rows);
+   }catch(err){
+    console.error('Error al obtener datos');
+    res.status(500).json({
+        mensaje:'Error al obtener datos'
+    });
+
+   }
+})
 module.exports = router;

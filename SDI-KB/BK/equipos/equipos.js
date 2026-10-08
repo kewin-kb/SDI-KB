@@ -8,9 +8,8 @@ const pool = require('../db');
 // TODOS LOS EQUIPOS
 router.get('/todosequipos', async (req, res) => {
     try {
-        const resultado = await pool.query(`
-        
-        SELECT 
+    const resultado = await pool.query(`
+        SELECT 		
             T0.id AS "idEquipo",
             T1.id AS "idActivo",
             T1.codigo AS "codigoActivo",
@@ -24,7 +23,7 @@ router.get('/todosequipos', async (req, res) => {
             T5.id AS "idEstado",
             T5.nombre AS "tipoEstadoAsignado",
 
-            TO_CHAR(T0.fechacompra, 'DD-MM-YYYY') AS "fechacompra",
+            TO_CHAR(T0.fechacompra, 'YYYY-MM-DD') AS "fechacompra",
             T0.marca,
             T0.hostname,
             T0.modelo,
@@ -35,16 +34,20 @@ router.get('/todosequipos', async (req, res) => {
             T0.tipodisco,
             T0.tiposistope,
             T0.tipoequipo,
-            T0.garantia
+            T0.garantia,
+			T7.nombrecompleto,
+			T7.apellido
+			
 
-        FROM equipos T0
-        INNER JOIN activos T1 ON T0.activo_id = T1.id
-        INNER JOIN tipoequipo T2 ON T0.tipoequipo = T2.id
-        INNER JOIN tipodisco T3 ON T0.tipodisco=T3.id
-        INNER JOIN tiposo T4 ON T0.tiposistope=T4.id
-        INNER JOIN estadoasignado T5 ON T1.estado_id = T5.id 
-        
-        ORDER BY T1.id DESC
+FROM equipos T0
+INNER JOIN activos T1 ON T0.activo_id = T1.id
+INNER JOIN tipoequipo T2 ON T0.tipoequipo = T2.id
+INNER JOIN tipodisco T3 ON T0.tipodisco=T3.id
+INNER JOIN tiposo T4 ON T0.tiposistope=T4.id
+INNER JOIN estadoasignado T5 ON T1.estado_id = T5.id
+LEFT JOIN asignaciones T6 ON T0.activo_id=T6.activo_id
+LEFT JOIN colaborador T7 ON T6.usuario_id =  T7.id    
+ORDER BY T1.id DESC
 
         
         `);
@@ -57,6 +60,36 @@ router.get('/todosequipos', async (req, res) => {
     }
 });
 
+
+//VER HISTORIAL DE EQUIPO
+router.get('/historial/:activo_id',async (req,res) =>{
+    try{
+        const {activo_id} =req.params;
+        const resultado = await pool.query(`
+            SELECT
+                H.id,
+                H.activo_id,
+                H.accion,
+                H.campo_modificado,
+                H.valor_anterior,
+                H.valor_nuevo,
+                TO_CHAR(H.fecha, 'DD-MM-YYYY') AS "fecha",
+                H.observacion,
+                U.nombre AS usuario
+            FROM historial H
+            LEFT JOIN usuarios U ON H.usuario_id = U.id
+            WHERE H.activo_id = $1
+            ORDER BY H.fecha DESC
+            `,[activo_id]);
+
+            res.json(resultado.rows);
+    }catch(error){
+        console.error('Erro al obtener historial:',error);
+        res.status(500).json({
+            mensaje: 'Error al obtener historial'
+        });
+    }
+});
 
 
 //TIPOS DE EQUIPOS
@@ -278,7 +311,7 @@ router.post('/agregarequipo', async (req, res) => {
     VALUES(
         $1,
         $2,
-        'CREACION',
+        'CREACIÓN',
         'Creacion del activo y equipo'
     )
     `,
@@ -381,6 +414,52 @@ router.put('/editar/:id', async(req,res) => {
     }
     const anterior = equipoActual.rows[0];
 
+    // Obtener nombres de los campos que son relaciones
+    const tiposEquipo = await client.query(`
+     SELECT id, nombre
+        FROM tipoequipo
+        WHERE id IN ($1, $2)
+    `, [
+        anterior.tipoequipo,
+        tipoequipo
+        ]);
+
+    const tiposDisco = await client.query(`
+    SELECT id, nombre
+    FROM tipodisco
+    WHERE id IN ($1, $2)
+`, [
+    anterior.tipodisco,
+    tipodisco
+]);
+
+const tiposSistema = await client.query(`
+    SELECT id, nombre
+    FROM tiposo
+    WHERE id IN ($1, $2)
+`, [
+    anterior.tiposistope,
+    tiposistope
+]);
+
+
+const mapaTipoEquipo = {};
+
+tiposEquipo.rows.forEach(tipo => {
+    mapaTipoEquipo[tipo.id] = tipo.nombre;
+});
+
+const mapaTipoDisco = {};
+
+tiposDisco.rows.forEach(tipo => {
+    mapaTipoDisco[tipo.id] = tipo.nombre;
+});
+
+const mapaTipoSistema = {};
+
+tiposSistema.rows.forEach(tipo => {
+    mapaTipoSistema[tipo.id] = tipo.nombre;
+});
 
     const verHostname = await client.query(
     `SELECT id
@@ -456,9 +535,9 @@ router.put('/editar/:id', async(req,res) => {
     const nuevo = equipoActualizado.rows[0];
     const cambios =[
         {
-            campo: 'tipoequipo',
-            anterior: anterior.tipoequipo,
-            nuevo: nuevo.tipoequipo
+        campo: 'Tipo de equipo',
+        anterior: mapaTipoEquipo[anterior.tipoequipo],
+        nuevo: mapaTipoEquipo[nuevo.tipoequipo]
         },{
             campo: 'marca',
             anterior: anterior.marca,
@@ -488,13 +567,13 @@ router.put('/editar/:id', async(req,res) => {
             anterior: anterior.disco,
             nuevo: nuevo.disco
         },{
-            campo:'tipodisco',
-            anterior: anterior.tipodisco,
-            nuevo: nuevo.tipodisco
+            campo: 'Tipo de disco',
+            anterior: mapaTipoDisco[anterior.tipodisco],
+            nuevo: mapaTipoDisco[nuevo.tipodisco]
         },{
-            campo:'tiposistope',
-            anterior: anterior.tiposistope,
-            nuevo: nuevo.tiposistope
+            campo: 'Sistema operativo',
+            anterior: mapaTipoSistema[anterior.tiposistope],
+            nuevo: mapaTipoSistema[nuevo.tiposistope]
         },{
             campo:'fechacompra',
             anterior: anterior.fechacompra,

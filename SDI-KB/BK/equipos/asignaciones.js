@@ -177,9 +177,7 @@ router.get('/colaboradores', async (req,res)=>{
     try{
         const resultado = await pool.query(
             `
-            SELECT 
-            id,
-            nombrecompleto
+            SELECT *
             FROM colaborador
             ORDER BY nombrecompleto ASC
             `);

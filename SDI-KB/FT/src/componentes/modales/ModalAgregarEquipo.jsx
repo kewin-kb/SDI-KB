@@ -78,11 +78,11 @@ function ModalAgregarEquipo({esAbierto, esCerrado, alGuardarSuccess, equipoAEdit
       setRam(equipoAEditar.ram || '');
       setDisco(equipoAEditar.disco || '');
       setGarantia(equipoAEditar.garantia || ''); 
-      if (equipoAEditar.fechacompra){
-        setFechaCompra(new Date (equipoAEditar.fechacompra).toISOString().split('T')[0]);
-      }else {
-        setFechaCompra('');
-      }
+      if (equipoAEditar.fechacompra) {
+    setFechaCompra(equipoAEditar.fechacompra);
+} else {
+    setFechaCompra('');
+}
       setPrimTipo(equipoAEditar.tipoequipo || '');
       setPrimDisco(equipoAEditar.tipodisco || '');
       setPrimerSO(equipoAEditar.tiposistope || '');

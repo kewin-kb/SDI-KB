@@ -28,15 +28,15 @@ function Dashboard (){
     const totalEquipos = todosEquipos.length;
 
     const equiposDisponibles = todosEquipos.filter(
-        (equipo)=>Number(equipo.estado)===1
+        (equipo)=>Number(equipo.idEstado)===1
     ).length;
 
     const equiposAsignados = todosEquipos.filter(
-        (equipo)=>Number(equipo.estado)===2
+        (equipo)=>Number(equipo.idEstado)===2
     ).length;
 
     const equiposDeBaja = todosEquipos.filter(
-        (equipo)=>Number(equipo.estado)===3
+        (equipo)=>Number(equipo.idEstado)===3
     ).length;
 
 

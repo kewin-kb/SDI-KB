@@ -257,8 +257,7 @@ function ModalAsignarEquipo({
                             <option
                                 key={colaborador.id}
                                 value={colaborador.id}
-                            >
-                                {colaborador.nombrecompleto}
+                            >{colaborador.area}-{colaborador.nombrecompleto} {colaborador.apellido}
                             </option>
 
                         )
