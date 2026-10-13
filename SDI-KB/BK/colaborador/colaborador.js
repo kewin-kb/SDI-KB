@@ -79,6 +79,7 @@ router.get('/verColaboradores', async(req,res) =>{
    try{
     const respuesta = await pool.query(`
         SELECT
+        T0.id,
         T0.nombrecompleto,
         T0.apellido,
         T0.cedula,

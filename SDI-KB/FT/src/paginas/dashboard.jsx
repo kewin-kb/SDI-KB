@@ -1,6 +1,6 @@
 import React, { useState,useEffect }  from "react";
 import ModalAgregarEquipo from '../componentes/modales/ModalAgregarEquipo';
-import ModalAgregarUsuario from "../componentes/modales/ModalAgregarUsuario";
+import ModalAgregarUsuario from "../componentes/modales/ModalAgregarColaborador.jsx";
 import axios from "axios";
 
 

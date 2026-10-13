@@ -3,7 +3,8 @@ import Login from './paginas/Login';
 import BarraNavegacion from './componentes/navegacion';
 import Dashboard from './paginas/dashboard';
 import Inventario from './paginas/inventario';
-import Usuario from './paginas/usuario';
+import Colaborador from './paginas/colaborador';
+import Configuracion from './paginas/configuracion';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 function App() {
@@ -51,7 +52,8 @@ function App() {
           
           <Route index element={<Dashboard />} />
           <Route path="inventario" element={<Inventario />} />
-          <Route path="usuario" element={<Usuario />} />
+          <Route path="colaborador" element={<Colaborador />} />
+          <Route path="configuracion" element={<Configuracion />} />
           
         
           <Route path="*" element={<Navigate to="/" replace />} />

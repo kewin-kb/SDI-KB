@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
-function BarraNavegacion({usuario, cerrarSesion}){
+function BarraNavegacion({cerrarSesion}){
 
     const navegacion = useNavigate();
-
     const cerrarSesionClick = () =>{
         cerrarSesion();
         navegacion('/Login');
@@ -43,8 +42,8 @@ return(
                     </li>
 
                     <li className='mt-2 ml-1'>
-                     <Link to="/usuario"
-                     className={`flex ${activo('/usuario')
+                     <Link to="/colaborador"
+                     className={`flex ${activo('/colaborador')
                      ?'rounded-l-lg p-1 items-center bg-white text-black'
                      :'rounded-l-lg p-1 items-center  hover:bg-blue-500'}`}>
                         <img src="../img/usuario.svg" alt="" 
@@ -53,7 +52,7 @@ return(
                      </Link>
                     </li>
                     <li className='mt-2 ml-1'>
-                     <Link to="/usuario"
+                     <Link to="/configuracion"
                      className={`flex ${activo('/configuracion')
                      ?'rounded-l-lg p-1 items-center bg-white text-black'
                      :'rounded-l-lg p-1 items-center  hover:bg-blue-500'}`}>

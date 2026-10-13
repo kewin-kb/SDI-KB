@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import ModalAgregarUsuario from "../componentes/modales/ModalAgregarUsuario";
+import ModalAgregarColaborador from "../componentes/modales/ModalAgregarColaborador.jsx";
 import axios from "axios";
 
-function Inventario (){
+function Colaborador (){
 
-const [modalAgregarUsuarioAbierto, setModalAgregarUsuarioAbierto]=useState(false);
+const [modalAgregarColaboradorAbierto, setModalAgregarColaboradorAbierto]=useState(false);
 const [todosColaboradores, setTodosColaboradores] = useState([]);
 
 const cargarColaborador = () =>{
@@ -25,7 +25,7 @@ useEffect(() =>{
     return(
         <div>
             <div>
-            <a onClick={() => setModalAgregarUsuarioAbierto(true)} className="bg-blue-600 flex justify-center items-center cursor-pointer rounded-xl p-1 text-white hover:invert-20 ">
+            <a onClick={() => setModalAgregarColaboradorAbierto(true)} className="bg-blue-600 flex justify-center items-center cursor-pointer rounded-xl p-1 text-white hover:invert-20 ">
                 <img src="./img/agregar-usuario.svg" alt="" className="w-8 brightness-0 invert" />
                 <span className="">Agregar nuevo colaborador</span>
             </a>
@@ -44,7 +44,7 @@ useEffect(() =>{
                     </thead>
                     <tbody>
                     {todosColaboradores.map((todosColaborador) =>(
-                    <tr>
+                    <tr key={todosColaborador.id}>
                             <td className="border-2 border-gray-300 pl-1">{todosColaborador.nombrecompleto}</td>
                             <td className="border-2 border-gray-300 pl-1">{todosColaborador.apellido}</td>
                             <td className="border-2 border-gray-300 pl-1">{todosColaborador.cedula}</td>
@@ -61,9 +61,9 @@ useEffect(() =>{
 
 
 
-<ModalAgregarUsuario
-        esAbierto={modalAgregarUsuarioAbierto}
-        esCerrado={() => setModalAgregarUsuarioAbierto(false)}
+<ModalAgregarColaborador
+        esAbierto={modalAgregarColaboradorAbierto}
+        esCerrado={() => setModalAgregarColaboradorAbierto(false)}
         esAgregarColaborador={() => {
           console.log('Colaborador registrado');
         }}
@@ -75,4 +75,4 @@ useEffect(() =>{
 
     )
 }
-export default Inventario;
+export default Colaborador;
