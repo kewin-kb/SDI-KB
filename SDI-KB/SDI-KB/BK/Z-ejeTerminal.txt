@@ -1,0 +1,11 @@
+npm init -y
+npm install express pg dotenv cors
+npm install -D nodemon
+
+
+express: Framework para la API.
+pg: Driver de PostgreSQL para Node.js.
+dotenv: Manejo de variables de entorno (credenciales seguras).
+cors: Permite conectar el frontend con el backend sin bloqueos de seguridad.
+nodemon: Reinicia el servidor automáticamente al hacer cambios.
+npm install bcryptjs jsonwebtoken
