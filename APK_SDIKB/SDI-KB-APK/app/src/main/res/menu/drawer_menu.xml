@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_inicio"
+        android:title="Inicio"/>
+
+    <item
+        android:id="@+id/nav_equipos"
+        android:title="Equipos"/>
+
+    <item
+        android:id="@+id/nav_usuarios"
+        android:title="Usuarios"/>
+
+    <item
+        android:id="@+id/nav_roles"
+        android:title="Roles"/>
+
+    <item
+        android:id="@+id/nav_reportes"
+        android:title="Reportes"/>
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Cerrar sesión"/>
+
+</menu>
